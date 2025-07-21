@@ -43,7 +43,20 @@ class TarefaService(
     }
 
     // Atualiza uma tarefa existente. O método save() também serve para atualizar se o ID estiver presente.
-    fun atualizarTarefa(tarefa: Tarefa): Tarefa = repository.save(tarefa)
+    fun atualizarTarefa(id: Long, dto: TarefaRequestDTO): TarefaResponseDTO {
+        val tarefaExistente = repository.findById(id).orElseThrow{
+            RuntimeException("Tarefa Não Encontrada")
+        }
+
+        val tarefaAtualizada = tarefaExistente.copy(
+            nomeTarefa = dto.nomeTarefa,
+            descricaoTarefa = dto.descricaoTarefa,
+            prioridadeTarefa = dto.prioridadeTarefa,
+            dataEntrega = dto.dataEntrega
+        )
+
+        return tarefaMapper.toDTO(repository.save(tarefaAtualizada))
+    }
 
     // Deleta uma tarefa pelo ID.
     fun deletarTarefa(id: Long){
