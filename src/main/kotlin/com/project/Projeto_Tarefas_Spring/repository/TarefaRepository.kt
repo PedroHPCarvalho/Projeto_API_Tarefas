@@ -4,7 +4,7 @@
 package com.project.Projeto_Tarefas_Spring.repository
 
 // Importa a classe Tarefa, que é a entidade a ser manipulada pelo repositório.
-import com.project.Projeto_Tarefas_Spring.model.Tarefa
+import com.project.Projeto_Tarefas_Spring.entity.Tarefa
 
 // Importa a interface JpaRepository do Spring Data JPA, que já fornece uma série de métodos
 // prontos para trabalhar com o banco de dados (como save, findAll, findById, delete etc.).

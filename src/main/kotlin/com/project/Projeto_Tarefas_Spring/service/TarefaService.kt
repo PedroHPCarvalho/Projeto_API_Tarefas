@@ -4,7 +4,10 @@
 package com.project.Projeto_Tarefas_Spring.service
 
 // Importa a classe Tarefa, que é a entidade manipulada.
-import com.project.Projeto_Tarefas_Spring.model.Tarefa
+import com.project.Projeto_Tarefas_Spring.dto.TarefaRequestDTO
+import com.project.Projeto_Tarefas_Spring.dto.TarefaResponseDTO
+import com.project.Projeto_Tarefas_Spring.entity.Tarefa
+import com.project.Projeto_Tarefas_Spring.mapper.TarefaMapper
 
 // Importa o repositório que faz o acesso ao banco de dados.
 import com.project.Projeto_Tarefas_Spring.repository.TarefaRepository
@@ -16,24 +19,37 @@ import org.springframework.stereotype.Service
 // Marca a classe como um service do Spring.
 @Service
 class TarefaService(
-
     // Injeta automaticamente uma instância de TarefaRepository via construtor.
-    private val repository: TarefaRepository
+    private val repository: TarefaRepository,
+    private val tarefaMapper: TarefaMapper
 ) {
 
     // Lista todas as tarefas do banco chamando o método findAll() do repositório.
-    fun listarTarefas(): List<Tarefa> = repository.findAll()
+    fun listarTarefas(): List<TarefaResponseDTO> {
+        return repository.findAll().map { tarefaMapper.toDTO(it) }
+    }
 
     // Busca uma tarefa pelo ID.
     // Se não encontrar, retorna null (utiliza orElse(null) para isso).
-    fun buscarTarefaPorId(id: Long): Tarefa? = repository.findById(id).orElse(null)
+    fun buscarTarefaPorId(id: Long): TarefaResponseDTO?{
+        return repository.findById(id).map { tarefaMapper.toDTO(it) }.orElse(null)
+    }
 
-    // Cria uma nova tarefa no banco (ou atualiza, se já existir).
-    fun criarTarefa(tarefa: Tarefa): Tarefa = repository.save(tarefa)
+    // Cria uma nova tarefa no banco (ou atualiza, se já existir)
+    fun criarTarefa(tarefaRequestDTO: TarefaRequestDTO): TarefaResponseDTO{
+        val tarefa = tarefaMapper.toEntity(tarefaRequestDTO)
+        val saveTarefa = repository.save(tarefa)
+        return tarefaMapper.toDTO(saveTarefa)
+    }
 
     // Atualiza uma tarefa existente. O método save() também serve para atualizar se o ID estiver presente.
     fun atualizarTarefa(tarefa: Tarefa): Tarefa = repository.save(tarefa)
 
     // Deleta uma tarefa pelo ID.
-    fun deletarTarefa(id: Long) = repository.deleteById(id)
+    fun deletarTarefa(id: Long){
+        if (!repository.existsById(id)){
+            throw RuntimeException("Tarefa Não encontrada")
+        }
+        return repository.deleteById(id)
+    }
 }

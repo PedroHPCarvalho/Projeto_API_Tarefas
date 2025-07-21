@@ -3,7 +3,7 @@
 package com.project.Projeto_Tarefas_Spring.controller
 
 // Importa o modelo Tarefa, que representa a entidade de dados.
-import com.project.Projeto_Tarefas_Spring.model.Tarefa
+import com.project.Projeto_Tarefas_Spring.entity.Tarefa
 
 // Importa o serviço que contém a lógica de negócios relacionada às tarefas.
 import com.project.Projeto_Tarefas_Spring.service.TarefaService
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController
 
 // Define o prefixo "/tarefas" para todas as rotas deste controller.
 @RequestMapping("/tarefas")
-claTarefaController(
+class TarefaController(
 
     // Injeta automaticamente uma instância de TarefaService via construtor.
     private val service: TarefaService

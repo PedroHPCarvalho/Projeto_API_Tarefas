@@ -1,4 +1,11 @@
 package com.project.Projeto_Tarefas_Spring.dto
 
-class TarefaRequestDTO {
-}
+import java.time.LocalDate
+
+
+data class TarefaRequestDTO (
+    val nomeTarefa: String,
+    val descricaoTarefa: String,
+    val prioridadeTarefa: String,
+    val dataEntrega: LocalDate
+)
